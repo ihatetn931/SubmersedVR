@@ -274,6 +274,29 @@ namespace SubmersedVR
         }
     }
 
+    [HarmonyPatch(typeof(Builder), nameof(Builder.UpdateRotation))]
+    public static class BuilderRotateBasePiecesUseCustomActions
+    {
+        static bool Prefix(int max, ref bool __result)
+        {
+            if (SteamVR_Actions.subnautica_BuilderRotateLeft.GetStateDown(SteamVR_Input_Sources.Any))
+            {
+                Builder.lastRotation = (Builder.lastRotation + max - 1) % max;
+                __result = true;
+                return false;
+            }
+            if (SteamVR_Actions.subnautica_BuilderRotateRight.GetStateDown(SteamVR_Input_Sources.Any))
+            {
+                Builder.lastRotation = (Builder.lastRotation + 1) % max;
+                __result = true;
+                return false;
+            }
+            __result = false;
+            FPSInputModule.current.lockMovement = __result;
+            return false;
+        }
+    }
+
 
     // Force the gaze based cursor, since we use it for the laserpointer
     [HarmonyPatch(typeof(VROptions), nameof(VROptions.GetUseGazeBasedCursor))]
