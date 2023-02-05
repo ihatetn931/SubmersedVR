@@ -281,18 +281,27 @@ namespace SubmersedVR
         {
             if (SteamVR_Actions.subnautica_BuilderRotateLeft.GetStateDown(SteamVR_Input_Sources.Any))
             {
+                FPSInputModule.current.lockMovement = true;
+                FPSInputModule.current.lockRotation = true;
                 Builder.lastRotation = (Builder.lastRotation + max - 1) % max;
                 __result = true;
                 return false;
             }
             if (SteamVR_Actions.subnautica_BuilderRotateRight.GetStateDown(SteamVR_Input_Sources.Any))
             {
+                FPSInputModule.current.lockMovement = true;
+                FPSInputModule.current.lockRotation = true;
                 Builder.lastRotation = (Builder.lastRotation + 1) % max;
                 __result = true;
                 return false;
             }
+            if (SteamVR_Actions.subnautica_BuilderRotateLeft.GetStateUp(SteamVR_Input_Sources.Any) || SteamVR_Actions.subnautica_BuilderRotateRight.GetStateUp(SteamVR_Input_Sources.Any))
+            {
+                FPSInputModule.current.lockMovement = false;
+                FPSInputModule.current.lockRotation = false;
+                return false;
+            }
             __result = false;
-            FPSInputModule.current.lockMovement = __result;
             return false;
         }
     }
